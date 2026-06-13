@@ -50,12 +50,15 @@
 - `reference/` = migration 참고자료 (분홍 루꼴라 원본 등)
 - 탐색앱 = `index.html` / 심화앱 = (신규, Phase 1.5)
 
-## 워크플로우 스킬
-`recipe-start`(현황) · `recipe-explore`(발상) · `recipe-develop`(개발) · `recipe-trial`(실습) · `recipe-taste`(시식) · `recipe-promote`(승격) · `recipe-log`(세션 로그)
+## 워크플로우 스킬 (agentskills.io 스펙)
+`recipe-start`(현황) · `recipe-explore`(발상) · `recipe-develop`(개발) · `recipe-trial`(실습) · `recipe-taste`(시식) · `recipe-finalize`(정식 레시피 정리·승격, 템플릿 보유) · `recipe-appbuild`(심화앱 빌드) · `recipe-log`(세션 로그)
+
+- **정식 레시피 템플릿:** `recipe-finalize/assets/recipe.template.md` — 맥락 + **계량 재료 + 실제 작업 순서 + 절임/발효 스펙**.
+- **심화앱:** `recipe-appbuild`가 recipe.md → 구조화 데이터(`recipe.schema.json`) → 상세 페이지(`recipe-page.template.jsx`).
 
 ---
 
 ## 지금 바로 다음 액션
-1. **분홍 루꼴라 김치 정식화** — `reference/` JSX·PDF에서 수치를 추출해 `recipes/분홍루꼴라김치/recipe.md` 초안 + 실습/시식으로 검증·보정.
+1. **분홍 루꼴라 김치 정식화** — `recipe-finalize`로 템플릿을 적용해 `reference/` JSX·PDF의 값을 `recipes/pink-rucola-kimchi/recipe.md`로 추출(미검증 수치는 `≈`) → `recipe-trial`/`recipe-taste`로 확정. *(템플릿 첫 검증 사례)*
 2. **레시피 #2·#3 후보 선정** — `recipe-explore` (새것·차별성 우선).
-3. (Phase 1 진행되며) 심화앱 데이터 스키마 설계.
+3. **심화앱 부트스트랩** — 레시피 1개 확정되면 `recipe-appbuild`로 `recipes.json` + 상세 페이지 → 포털 v0.

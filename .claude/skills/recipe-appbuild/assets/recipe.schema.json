@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Recipe (심화앱 데이터 단위)",
+  "description": "recipe.md를 구조화한 단위. 여러 개를 모아 assets/recipes.json(배열)으로 심화앱이 렌더.",
+  "type": "object",
+  "required": ["slug", "name", "category", "ferment", "servings", "ingredients", "steps", "ferment_schedule"],
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "recipe.md frontmatter와 동일" },
+    "name": { "type": "string" },
+    "name_en": { "type": "string" },
+    "category": { "enum": ["trad", "novel", "spec"] },
+    "target": { "type": ["string", "null"], "enum": ["외국인", "비건", "시니어", "건강", "신세대", null] },
+    "ferment": { "enum": ["live", "flavor"] },
+    "ref": { "enum": ["new", "maybe", "yes"] },
+    "status": { "enum": ["draft", "confirmed"] },
+    "difficulty": { "type": "integer", "minimum": 1, "maximum": 3 },
+    "servings": { "type": "string" },
+    "total_time": { "type": "string" },
+    "palette": { "type": "array", "items": { "type": "string" } },
+    "concept": { "type": "string", "description": "0. 한 줄 콘셉트" },
+    "story": { "type": "string", "description": "1. 스토리·차별점" },
+    "twist": { "type": "string" },
+    "ingredients": {
+      "type": "array",
+      "description": "2. 계량 재료",
+      "items": {
+        "type": "object",
+        "required": ["item", "amount"],
+        "properties": {
+          "group": { "type": "string", "description": "본재료/양념/절임용" },
+          "item": { "type": "string" },
+          "amount": { "type": "string", "description": "예: '300 g', '물 1L당 20g'" },
+          "note": { "type": "string" },
+          "approx": { "type": "boolean", "description": "true면 실습 검증 필요(≈)" }
+        }
+      }
+    },
+    "brine": {
+      "type": "object",
+      "description": "3. 절임 스펙",
+      "properties": {
+        "salinity": { "type": "string", "description": "예: '2%'" },
+        "time": { "type": "string" },
+        "temp": { "type": "string" },
+        "target": { "type": "string" }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "description": "4. 작업 순서",
+      "items": {
+        "type": "object",
+        "required": ["text"],
+        "properties": {
+          "phase": { "type": "string", "description": "준비/양념/절임/담기/발효" },
+          "text": { "type": "string" },
+          "tip": { "type": "string" }
+        }
+      }
+    },
+    "ferment_schedule": {
+      "type": "array",
+      "description": "5. 발효 일정",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stage": { "type": "string", "description": "실온/냉장" },
+          "temp": { "type": "string" },
+          "duration": { "type": "string" },
+          "goal": { "type": "string" }
+        }
+      }
+    },
+    "best_after": { "type": "string", "description": "먹기 좋은 시점" },
+    "storage": { "type": "string" },
+    "plating": { "type": "string", "description": "6. 플레이팅" },
+    "tasting": {
+      "type": "object",
+      "description": "7. 시식 루브릭",
+      "properties": {
+        "scores": {
+          "type": "object",
+          "properties": {
+            "flavor": { "type": "integer" }, "texture": { "type": "integer" },
+            "visual": { "type": "integer" }, "ferment": { "type": "integer" },
+            "uniqueness": { "type": "integer" }
+          }
+        },
+        "comment": { "type": "string" }
+      }
+    },
+    "variations": { "type": "array", "items": { "type": "string" }, "description": "8. 변형·옵션" },
+    "pitfalls": { "type": "array", "items": { "type": "string" }, "description": "9. 실패 포인트" },
+    "sources": { "type": "array", "items": { "type": "string" }, "description": "10. 출처" }
+  }
+}
