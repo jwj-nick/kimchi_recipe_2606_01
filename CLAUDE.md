@@ -12,6 +12,9 @@ GitHub: `jwj-nick/kimchi_recipe_2606_01` · Pages: https://jwj-nick.github.io/ki
 RTL/HW 엔지니어 출신. React/Vite/FastAPI, Claude Code, AI 워크플로우에 익숙함.
 → 기술적 설명 OK. 단, 결론·다음 행동을 먼저 제시하고 근거는 뒤에.
 
+## 로드맵
+전략·단계는 `MASTERPLAN.md` 참조 (SSOT). 요약: Phase 1 = 나만의 확정 레시피 2~3개(분홍 루꼴라 확정) → Phase 1.5 = 탐색앱+심화앱 = 레시피 포털 v0 → Phase 2 = 김치 요리 백과로 진화(이후).
+
 ## 폴더 구조
 **두 개의 큰 버킷: ① 탐색·선정(`explore/`) → ② 최종 선정(`recipes/`).**
 - `index.html`, `assets/` — 아이디어 Pool 앱(빌드 없음). `assets/data.json`이 기계용 SSOT, `assets/data.js`는 임베드 사본(둘 다 함께 재생성).
