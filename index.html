@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>나만의 김치 레시피 — 아이디어 Pool</title>
+<meta name="description" content="전통·참신·특화 62종 김치 아이디어를 카테고리·타깃·레퍼런스·발효 기준으로 탐색하는 아이디어 풀." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#FBF7EE; --sogeum:#F3ECDD; --ongi:#2B211C; --ink:#352D26;
+    --muted:#897D6D; --line:rgba(43,33,28,0.10); --card:#FFFDF8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:'IBM Plex Sans KR',system-ui,sans-serif;line-height:1.55;}
+  a{color:inherit;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 18px 80px;}
+  header{padding:46px 0 18px;text-align:center;border-bottom:1px solid var(--line);}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2.5px;
+    color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
+  h1{font-family:'Gowun Batang',serif;font-size:34px;margin:0 0 8px;line-height:1.2;}
+  .sub{color:var(--muted);font-size:14px;max-width:560px;margin:0 auto;}
+  .stats{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:18px;}
+  .stat{background:var(--sogeum);border:1px solid var(--line);border-radius:99px;
+    padding:5px 13px;font-size:12.5px;font-weight:600;}
+  .stat b{font-family:'IBM Plex Mono',monospace;}
+  .controls{position:sticky;top:0;background:rgba(251,247,238,0.92);
+    backdrop-filter:blur(6px);padding:16px 0 10px;border-bottom:1px solid var(--line);z-index:5;}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px;}
+  .row .lbl{font-size:11px;font-weight:700;color:var(--muted);width:56px;flex:none;
+    letter-spacing:0.5px;}
+  .chip{border:1px solid var(--line);background:var(--card);border-radius:99px;
+    padding:6px 13px;font-size:13px;cursor:pointer;font-weight:500;color:var(--ink);
+    transition:all .12s;font-family:inherit;}
+  .chip:hover{border-color:var(--ongi);}
+  .chip.on{background:var(--ongi);color:#fff;border-color:var(--ongi);}
+  .chip.on[data-c]{background:var(--cc);border-color:var(--cc);}
+  .search{flex:1;min-width:160px;border:1px solid var(--line);border-radius:10px;
+    padding:8px 12px;font-size:14px;font-family:inherit;background:var(--card);}
+  .toggle{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;cursor:pointer;
+    margin-left:auto;}
+  .toggle input{width:16px;height:16px;accent-color:#BE3A2B;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:14px;
+    margin-top:22px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    display:flex;flex-direction:column;transition:transform .12s,box-shadow .12s;}
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(43,33,28,0.08);}
+  .swatch{height:6px;}
+  .cbody{padding:15px 16px 16px;display:flex;flex-direction:column;gap:9px;flex:1;}
+  .cardtop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .cname{font-family:'Gowun Batang',serif;font-size:18px;font-weight:700;line-height:1.25;}
+  .ferm{font-size:15px;flex:none;}
+  .concept{font-size:13px;color:var(--muted);}
+  .ings{display:flex;flex-wrap:wrap;gap:5px;}
+  .ing{background:var(--sogeum);border-radius:6px;padding:2px 8px;font-size:11.5px;}
+  .twist{font-size:12.5px;font-weight:600;color:var(--ink);
+    border-left:2.5px solid var(--line);padding-left:9px;}
+  .meta{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:6px;
+    border-top:1px solid var(--line);flex-wrap:wrap;}
+  .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;color:#fff;}
+  .lv{display:inline-flex;gap:3px;align-items:center;}
+  .dot{width:6px;height:6px;border-radius:99px;background:rgba(0,0,0,0.16);}
+  .dot.on{background:var(--ongi);}
+  .tgtchip{font-size:11px;font-weight:600;color:var(--muted);}
+  .links{display:flex;gap:8px;margin-top:2px;}
+  .links a{font-size:11.5px;color:var(--muted);text-decoration:none;
+    border-bottom:1px dotted var(--muted);}
+  .links a:hover{color:var(--ink);}
+  .empty{text-align:center;color:var(--muted);padding:60px 0;font-size:14px;}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:50px;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="./assets/data.js"></script>
+
+<script type="text/babel">
+const { useState, useMemo } = React;
+const D = window.KIMCHI_DATA;
+const { CAT, TGT, REF, FERM } = D.meta;
+const IDEAS = D.ideas;
+
+function Lv({ n }) {
+  return <span className="lv">{[1,2,3].map(i =>
+    <span key={i} className={"dot"+(i<=n?" on":"")} />)}</span>;
+}
+
+function Card({ idea }) {
+  const ref = REF[idea.ref], ferm = FERM[idea.ferment], tgt = idea.tgt && TGT[idea.tgt];
+  const q = encodeURIComponent(idea.name + " 김치");
+  return (
+    <div className="card">
+      <div className="swatch" style={{background: idea.color}} />
+      <div className="cbody">
+        <div className="cardtop">
+          <div className="cname">{idea.name}</div>
+          <div className="ferm" title={ferm.label}>{ferm.icon}</div>
+        </div>
+        <div className="concept">{idea.concept}</div>
+        <div className="ings">{idea.ingredients.map((g,i)=>
+          <span key={i} className="ing">{g}</span>)}</div>
+        <div className="twist">{idea.twist}</div>
+        <div className="meta">
+          <span className="badge" style={{background: ref.c}}>{ref.label}</span>
+          {tgt && <span className="tgtchip">· {tgt.label}</span>}
+          <span style={{marginLeft:"auto"}}><Lv n={idea.level} /></span>
+        </div>
+        <div className="links">
+          <a href={"https://www.google.com/search?tbm=isch&q="+q} target="_blank" rel="noopener">이미지</a>
+          <a href={"https://www.google.com/search?q="+q} target="_blank" rel="noopener">검색</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [cat, setCat] = useState("all");
+  const [tgt, setTgt] = useState("all");
+  const [ref, setRef] = useState("all");
+  const [newOnly, setNewOnly] = useState(false);
+  const [qstr, setQstr] = useState("");
+
+  const list = useMemo(() => IDEAS.filter(x => {
+    if (cat !== "all" && x.cat !== cat) return false;
+    if (cat === "spec" && tgt !== "all" && x.tgt !== tgt) return false;
+    if (ref !== "all" && x.ref !== ref) return false;
+    if (newOnly && x.ref !== "new") return false;
+    if (qstr) {
+      const s = (x.name+" "+x.concept+" "+x.ingredients.join(" ")+" "+x.twist).toLowerCase();
+      if (!s.includes(qstr.toLowerCase())) return false;
+    }
+    return true;
+  }), [cat, tgt, ref, newOnly, qstr]);
+
+  const catChip = (k, label) =>
+    <button className={"chip"+(cat===k?" on":"")}
+      style={cat===k&&k!=="all"?{"--cc":CAT[k]?.c}:null}
+      data-c={k!=="all"?"":undefined}
+      onClick={()=>{setCat(k); if(k!=="spec") setTgt("all");}}>{label}</button>;
+
+  return (
+    <div className="wrap">
+      <header>
+        <div className="eyebrow">Kimchi Recipe Lab · Idea Pool</div>
+        <h1>나만의 김치 레시피 — 아이디어 Pool</h1>
+        <div className="sub">전통·참신·특화 <b>{IDEAS.length}종</b>의 김치 아이디어를
+          카테고리·타깃·레퍼런스·발효 기준으로 탐색합니다. 여기서 후보를 골라 개발·실습·시식으로 발전시킵니다.</div>
+        <div className="stats">
+          <span className="stat">전통 <b>{IDEAS.filter(i=>i.cat==="trad").length}</b></span>
+          <span className="stat">참신 <b>{IDEAS.filter(i=>i.cat==="novel").length}</b></span>
+          <span className="stat">특화 <b>{IDEAS.filter(i=>i.cat==="spec").length}</b></span>
+          <span className="stat">🥬 새것 <b>{IDEAS.filter(i=>i.ref==="new").length}</b></span>
+        </div>
+      </header>
+
+      <div className="controls">
+        <div className="row">
+          <span className="lbl">카테고리</span>
+          {catChip("all","전체")}
+          {catChip("trad", CAT.trad.label)}
+          {catChip("novel", CAT.novel.label)}
+          {catChip("spec", CAT.spec.label)}
+          <label className="toggle">
+            <input type="checkbox" checked={newOnly} onChange={e=>setNewOnly(e.target.checked)} />
+            새 아이디어만
+          </label>
+        </div>
+        {cat === "spec" &&
+          <div className="row">
+            <span className="lbl">타깃</span>
+            <button className={"chip"+(tgt==="all"?" on":"")} onClick={()=>setTgt("all")}>전체</button>
+            {Object.entries(TGT).map(([k,v]) =>
+              <button key={k} className={"chip"+(tgt===k?" on":"")}
+                style={tgt===k?{"--cc":v.c}:null} data-c=""
+                onClick={()=>setTgt(k)}>{v.label}</button>)}
+          </div>}
+        <div className="row">
+          <span className="lbl">레퍼런스</span>
+          <button className={"chip"+(ref==="all"?" on":"")} onClick={()=>setRef("all")}>전체</button>
+          {Object.entries(REF).map(([k,v]) =>
+            <button key={k} className={"chip"+(ref===k?" on":"")}
+              style={ref===k?{"--cc":v.c}:null} data-c=""
+              onClick={()=>setRef(k)}>{v.label}</button>)}
+          <input className="search" placeholder="이름·재료·콘셉트 검색…"
+            value={qstr} onChange={e=>setQstr(e.target.value)} />
+        </div>
+      </div>
+
+      {list.length ?
+        <div className="grid">{list.map(x => <Card key={x.id} idea={x} />)}</div> :
+        <div className="empty">조건에 맞는 아이디어가 없습니다.</div>}
+
+      <footer>
+        {list.length}종 표시 · 나만의 김치 레시피 랩 ·
+        데이터 SSOT <code>assets/data.json</code>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

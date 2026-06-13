@@ -1,0 +1,11 @@
+# 저작권: 외부 레시피 PDF·원문은 공개하지 않음 (참고용 로컬 보관)
+reference/*.pdf
+*.pdf
+
+# 로컬 설정
+.claude/settings.local.json
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
