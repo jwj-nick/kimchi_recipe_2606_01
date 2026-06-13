@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>나만의 레시피 — My Recipes</title>
+<meta name="description" content="확정 레시피를 깊게 다루고, 실측값(분량·시간·온도·시식)을 직접 채워 넣는 심화 레시피 앱." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{ --bg:#FBF7EE; --paper:#FFFBF6; --ink:#2E2724; --muted:#8C7E76; --line:rgba(46,39,36,0.12); }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans KR',system-ui,sans-serif;line-height:1.6;}
+  a{color:inherit;}
+  .wrap{max-width:680px;margin:0 auto;padding:0 18px 90px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:13px;}
+  .topbar a{text-decoration:none;color:var(--muted);border-bottom:1px dotted var(--muted);}
+  header{padding:30px 0 10px;text-align:center;}
+  .bar{height:6px;width:60px;border-radius:99px;margin:0 auto 16px;}
+  h1{font-family:'Gowun Batang',serif;font-size:32px;margin:0 0 4px;}
+  .en{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1px;}
+  .concept{color:var(--muted);margin-top:12px;}
+  .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;font-size:12.5px;color:var(--muted);}
+  .progress{margin:18px 0 0;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;display:flex;align-items:center;gap:10px;}
+  .pbar{flex:1;height:8px;background:var(--line);border-radius:99px;overflow:hidden;}
+  .pfill{height:100%;border-radius:99px;transition:width .2s;}
+  section{padding:24px 0;border-top:1px solid var(--line);}
+  h2{font-family:'Gowun Batang',serif;font-size:21px;margin:0 0 14px;}
+  .ro{line-height:1.75;}
+  .twist{font-weight:600;border-left:3px solid;padding-left:12px;margin:10px 0;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  td,th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;}
+  th{font-size:12px;color:var(--muted);font-weight:600;}
+  .grouphdr{font-weight:700;font-size:13px;padding-top:14px;}
+  input[type=text],input[type=number],textarea{font-family:inherit;font-size:14px;border:1px solid var(--line);
+    border-radius:8px;padding:6px 9px;background:#fff;color:var(--ink);width:100%;}
+  input:focus,textarea:focus{outline:none;border-color:var(--ink);}
+  .amt{max-width:130px;font-family:'IBM Plex Mono',monospace;text-align:right;}
+  .blank{background:#FFF6E8;}
+  .filled{background:#F0F6EE;}
+  ol,ul{padding-left:20px;}
+  ol li,ul li{margin-bottom:10px;}
+  .tip{font-size:12.5px;color:var(--muted);margin-top:3px;}
+  .scores{display:flex;gap:12px;flex-wrap:wrap;}
+  .score{text-align:center;}
+  .score label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;}
+  .score input{width:56px;text-align:center;font-family:'IBM Plex Mono',monospace;}
+  .actions{position:sticky;bottom:0;background:rgba(251,247,238,0.95);backdrop-filter:blur(6px);
+    border-top:1px solid var(--line);padding:12px 0;display:flex;gap:8px;flex-wrap:wrap;margin-top:24px;}
+  button{font-family:inherit;font-size:13.5px;font-weight:600;border-radius:10px;padding:9px 14px;cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink);}
+  button.primary{color:#fff;border:none;}
+  button:hover{filter:brightness(0.97);}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px;}
+  .toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:var(--ink);color:#fff;
+    padding:10px 16px;border-radius:99px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;}
+  .toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="toast" class="toast"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="./assets/recipes.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useMemo } = React;
+const RECIPES = window.RECIPES || {};
+const SCORE_KEYS = { flavor: "맛·향", texture: "식감", visual: "비주얼", ferment: "발효", uniqueness: "차별성" };
+const FERM_LABEL = { live: "🥬 진짜 김치", flavor: "🍶 가공품" };
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 1600);
+}
+
+// 편집 가능한 필드 기본 구조 (recipe로부터 시드)
+function seedEdits(r) {
+  return {
+    total_time: r.total_time || "",
+    ingredients: r.ingredients.map(i => i.amount || ""),
+    brine: { salinity: r.brine?.salinity || "", time: r.brine?.time || "", temp: r.brine?.temp || "", target: r.brine?.target || "" },
+    ferment: (r.ferment_schedule || []).map(f => ({ temp: f.temp || "", duration: f.duration || "", goal: f.goal || "" })),
+    best_after: r.best_after || "", storage: r.storage || "",
+    tasting: {
+      flavor: r.tasting?.scores?.flavor ?? "", texture: r.tasting?.scores?.texture ?? "",
+      visual: r.tasting?.scores?.visual ?? "", ferment: r.tasting?.scores?.ferment ?? "",
+      uniqueness: r.tasting?.scores?.uniqueness ?? "", comment: r.tasting?.comment || ""
+    }
+  };
+}
+
+// 빈칸 진행률 계산: 채워야 할 핵심 필드들
+function progress(r, e) {
+  const fields = [];
+  e.ingredients.forEach(a => fields.push(!!a.trim()));
+  fields.push(!!e.brine.time.trim(), !!e.brine.temp.trim());
+  e.ferment.forEach(f => fields.push(!!String(f.temp).trim()));
+  fields.push(!!e.storage.trim());
+  Object.keys(SCORE_KEYS).forEach(k => fields.push(e.tasting[k] !== "" && e.tasting[k] != null));
+  const done = fields.filter(Boolean).length;
+  return { done, total: fields.length, pct: Math.round(done / fields.length * 100) };
+}
+
+function buildMarkdown(r, e) {
+  const L = [];
+  L.push(`# ${r.name} · ${r.name_en || ""}`.trim());
+  L.push("", `- 분량: ${r.servings} · 소요: ${e.total_time || "___"}`, "");
+  L.push("## 계량 재료");
+  let g = null;
+  r.ingredients.forEach((it, i) => {
+    if (it.group !== g) { g = it.group; L.push(`### ${g}`); L.push("| 재료 | 분량 | 메모 |", "|---|---|---|"); }
+    L.push(`| ${it.item} | ${e.ingredients[i] || "___"} | ${it.note || ""} |`);
+  });
+  L.push("", "## 절임 스펙",
+    `- 소금 농도: ${e.brine.salinity || "___"}`,
+    `- 시간: ${e.brine.time || "___"} · 온도: ${e.brine.temp || "___"}`,
+    `- 목표: ${e.brine.target || "___"}`, "");
+  L.push("## 작업 순서");
+  r.steps.forEach((s, i) => L.push(`${i + 1}. [${s.phase || ""}] ${s.text}${s.tip ? `  (팁: ${s.tip})` : ""}`));
+  L.push("", "## 발효 일정", "| 구간 | 온도 | 기간 | 목표 |", "|---|---|---|---|");
+  (r.ferment_schedule || []).forEach((f, i) =>
+    L.push(`| ${f.stage} | ${e.ferment[i]?.temp || "___"} | ${e.ferment[i]?.duration || "___"} | ${e.ferment[i]?.goal || ""} |`));
+  L.push(`- 먹기 좋은 시점: ${e.best_after || "___"}`, `- 보관: ${e.storage || "___"}`, "");
+  L.push("## 시식 평가");
+  Object.entries(SCORE_KEYS).forEach(([k, lab]) => L.push(`- ${lab}: ${e.tasting[k] === "" ? "___" : e.tasting[k]}/3`));
+  if (e.tasting.comment) L.push(`- 총평: ${e.tasting.comment}`);
+  return L.join("\n");
+}
+
+function Section({ title, children }) { return <section><h2>{title}</h2>{children}</section>; }
+
+function App() {
+  const slugs = Object.keys(RECIPES);
+  const hash = (location.hash || "").replace("#", "");
+  const slug = RECIPES[hash] ? hash : slugs[0];
+  const r = RECIPES[slug];
+  if (!r) return <div className="wrap"><p>레시피 데이터가 없습니다.</p></div>;
+
+  const C = { brand: (r.palette || [])[0] || "#C84E6C", accent: (r.palette || [])[1] || "#4E7A3E" };
+  const storeKey = "recipe-edits:" + slug;
+  const [e, setE] = useState(() => {
+    try { const s = localStorage.getItem(storeKey); if (s) return { ...seedEdits(r), ...JSON.parse(s) }; } catch (_) {}
+    return seedEdits(r);
+  });
+  useEffect(() => { try { localStorage.setItem(storeKey, JSON.stringify(e)); } catch (_) {} }, [e]);
+
+  const p = useMemo(() => progress(r, e), [e]);
+  const set = (patch) => setE(prev => ({ ...prev, ...patch }));
+  const setIng = (i, v) => setE(prev => { const a = [...prev.ingredients]; a[i] = v; return { ...prev, ingredients: a }; });
+  const setFerm = (i, key, v) => setE(prev => { const a = prev.ferment.map(x => ({ ...x })); a[i][key] = v; return { ...prev, ferment: a }; });
+  const setBrine = (key, v) => setE(prev => ({ ...prev, brine: { ...prev.brine, [key]: v } }));
+  const setScore = (key, v) => setE(prev => ({ ...prev, tasting: { ...prev.tasting, [key]: v } }));
+
+  const cls = (v) => v && String(v).trim() ? "filled" : "blank";
+
+  const copyMd = async () => {
+    const md = buildMarkdown(r, e);
+    try { await navigator.clipboard.writeText(md); toast("마크다운 복사됨 — Nick에게 전달하세요"); }
+    catch (_) { window.prompt("복사하세요 (Ctrl+C):", md); }
+  };
+  const downloadJson = () => {
+    const blob = new Blob([JSON.stringify({ slug, edits: e }, null, 2)], { type: "application/json" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = slug + "-filled.json"; a.click(); toast("JSON 내려받음");
+  };
+  const reset = () => { if (confirm("입력한 값을 모두 지울까요?")) { localStorage.removeItem(storeKey); setE(seedEdits(r)); toast("초기화됨"); } };
+
+  let lastGroup = null;
+  return (
+    <div className="wrap">
+      <div className="topbar">
+        <a href="./index.html">← 아이디어 Pool</a>
+        <span style={{ color: C.brand, fontWeight: 600 }}>My Recipes · 심화</span>
+      </div>
+
+      <header>
+        <div className="bar" style={{ background: C.brand }} />
+        <h1>{r.name}</h1>
+        {r.name_en && <div className="en" style={{ color: C.brand }}>{r.name_en.toUpperCase()}</div>}
+        {r.concept && <p className="concept">{r.concept}</p>}
+        <div className="badges">
+          <span>{FERM_LABEL[r.ferment]}</span><span>· {r.servings}</span>
+          {r.target && <span>· 타깃 {r.target}</span>}
+          {r.status === "draft" && <span>· ✍️ 작성 중</span>}
+        </div>
+        <div className="progress">
+          <span>채움</span>
+          <div className="pbar"><div className="pfill" style={{ width: p.pct + "%", background: C.accent }} /></div>
+          <span style={{ fontFamily: "'IBM Plex Mono',monospace" }}>{p.done}/{p.total}</span>
+        </div>
+        <div className="hint">노란 칸은 아직 빈 칸, 초록 칸은 채워진 칸. 입력하면 이 기기에 자동 저장됩니다.</div>
+      </header>
+
+      {/* 맥락 (읽기 전용) */}
+      {(r.story || r.twist) && <Section title="왜 이 김치인가">
+        {r.story && <p className="ro">{r.story}</p>}
+        {r.twist && <p className="twist" style={{ borderColor: C.accent }}>{r.twist}</p>}
+      </Section>}
+
+      {/* 계량 재료 (입력) */}
+      <Section title={`계량 재료 · ${r.servings}`}>
+        <table><tbody>
+          {r.ingredients.map((it, i) => {
+            const hdr = it.group !== lastGroup ? (lastGroup = it.group) : null;
+            return (
+              <React.Fragment key={i}>
+                {hdr && <tr><td className="grouphdr" colSpan={3} style={{ color: C.brand }}>{hdr}</td></tr>}
+                <tr>
+                  <td style={{ width: "40%" }}>{it.item}</td>
+                  <td style={{ width: "30%" }}>
+                    <input type="text" className={"amt " + cls(e.ingredients[i])} placeholder="분량"
+                      value={e.ingredients[i]} onChange={ev => setIng(i, ev.target.value)} />
+                  </td>
+                  <td style={{ color: "var(--muted)", fontSize: 12.5 }}>{it.note}</td>
+                </tr>
+              </React.Fragment>
+            );
+          })}
+        </tbody></table>
+      </Section>
+
+      {/* 절임 스펙 (입력) */}
+      <Section title="절임 스펙">
+        <table><tbody>
+          <tr><td style={{ width: "30%" }}>소금 농도</td><td><input type="text" className={cls(e.brine.salinity)} value={e.brine.salinity} onChange={ev => setBrine("salinity", ev.target.value)} placeholder="예: 2%" /></td></tr>
+          <tr><td>절임 시간</td><td><input type="text" className={cls(e.brine.time)} value={e.brine.time} onChange={ev => setBrine("time", ev.target.value)} placeholder="예: 5분 / 30초" /></td></tr>
+          <tr><td>온도</td><td><input type="text" className={cls(e.brine.temp)} value={e.brine.temp} onChange={ev => setBrine("temp", ev.target.value)} placeholder="예: 따뜻한 물 ___℃" /></td></tr>
+        </tbody></table>
+        {r.brine?.target && <p className="tip">목표 상태: {r.brine.target}</p>}
+      </Section>
+
+      {/* 작업 순서 (읽기 전용) */}
+      <Section title="작업 순서">
+        <ol>{r.steps.map((s, i) => <li key={i}>
+          {s.phase && <b style={{ color: C.brand }}>[{s.phase}] </b>}{s.text}
+          {s.tip && <div className="tip">💡 {s.tip}</div>}
+        </li>)}</ol>
+      </Section>
+
+      {/* 발효 일정 (입력) */}
+      <Section title="발효 일정">
+        <table>
+          <thead><tr><th>구간</th><th>온도</th><th>기간</th><th>목표</th></tr></thead>
+          <tbody>{(r.ferment_schedule || []).map((f, i) => <tr key={i}>
+            <td>{f.stage}</td>
+            <td><input type="text" className={cls(e.ferment[i]?.temp)} value={e.ferment[i]?.temp || ""} onChange={ev => setFerm(i, "temp", ev.target.value)} placeholder="℃" /></td>
+            <td><input type="text" className={cls(e.ferment[i]?.duration)} value={e.ferment[i]?.duration || ""} onChange={ev => setFerm(i, "duration", ev.target.value)} /></td>
+            <td style={{ color: "var(--muted)", fontSize: 12.5 }}>{f.goal}</td>
+          </tr>)}</tbody>
+        </table>
+        <table style={{ marginTop: 10 }}><tbody>
+          <tr><td style={{ width: "30%" }}>먹기 좋은 시점</td><td><input type="text" className={cls(e.best_after)} value={e.best_after} onChange={ev => set({ best_after: ev.target.value })} /></td></tr>
+          <tr><td>보관(며칠까지)</td><td><input type="text" className={cls(e.storage)} value={e.storage} onChange={ev => set({ storage: ev.target.value })} placeholder="실습으로 확인" /></td></tr>
+        </tbody></table>
+      </Section>
+
+      {/* 플레이팅 (읽기 전용) */}
+      {r.plating && <Section title="플레이팅"><p className="ro">{r.plating}</p></Section>}
+
+      {/* 시식 평가 (입력) */}
+      <Section title="시식 평가 (각 0~3점)">
+        <div className="scores">
+          {Object.entries(SCORE_KEYS).map(([k, lab]) => (
+            <div className="score" key={k}>
+              <label>{lab}</label>
+              <input type="number" min="0" max="3" className={e.tasting[k] !== "" && e.tasting[k] != null ? "filled" : "blank"}
+                value={e.tasting[k]} onChange={ev => setScore(k, ev.target.value === "" ? "" : Number(ev.target.value))} />
+            </div>
+          ))}
+        </div>
+        <textarea style={{ marginTop: 12 }} rows={2} placeholder="총평·코멘트"
+          value={e.tasting.comment} onChange={ev => setScore("comment", ev.target.value)} />
+      </Section>
+
+      {/* 변형·실패 (읽기 전용) */}
+      {r.variations?.length > 0 && <Section title="변형 · 옵션"><ul className="ro">{r.variations.map((v, i) => <li key={i}>{v}</li>)}</ul></Section>}
+      {r.pitfalls?.length > 0 && <Section title="실패 포인트 & 회피"><ul className="ro">{r.pitfalls.map((v, i) => <li key={i}>{v}</li>)}</ul></Section>}
+
+      <div className="actions">
+        <button className="primary" style={{ background: C.brand }} onClick={copyMd}>📋 마크다운 복사</button>
+        <button onClick={downloadJson}>⬇ JSON 내려받기</button>
+        <button onClick={reset} style={{ marginLeft: "auto", color: "var(--muted)" }}>초기화</button>
+      </div>
+      <p className="hint">채운 값은 <b>마크다운 복사</b> 또는 <b>JSON 내려받기</b>로 Nick에게 전달 → 정식 레시피(recipe.md)에 반영됩니다.</p>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

@@ -158,6 +158,12 @@ function App() {
           <span className="stat">특화 <b>{IDEAS.filter(i=>i.cat==="spec").length}</b></span>
           <span className="stat">🥬 새것 <b>{IDEAS.filter(i=>i.ref==="new").length}</b></span>
         </div>
+        <div style={{marginTop:16}}>
+          <a href="./recipe.html" style={{display:"inline-block",background:"#C84E6C",color:"#fff",
+            textDecoration:"none",fontWeight:600,fontSize:13.5,padding:"9px 16px",borderRadius:99}}>
+            📖 나만의 레시피(심화) 보기 →
+          </a>
+        </div>
       </header>
 
       <div className="controls">
