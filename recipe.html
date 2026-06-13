@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>나만의 레시피 — My Recipes</title>
-<meta name="description" content="확정 레시피를 깊게 다루고, 실측값(분량·시간·온도·시식)을 직접 채워 넣는 심화 레시피 앱." />
+<meta name="description" content="확정 레시피를 원문 가이드 그대로 보고, 계량 정보(분량·시간·온도·시식)를 직접 채워 넣는 심화 레시피 앱." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
 <style>
@@ -12,22 +12,25 @@
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans KR',system-ui,sans-serif;line-height:1.6;}
   a{color:inherit;}
-  .wrap{max-width:680px;margin:0 auto;padding:0 18px 90px;}
-  .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:13px;}
-  .topbar a{text-decoration:none;color:var(--muted);border-bottom:1px dotted var(--muted);}
-  header{padding:30px 0 10px;text-align:center;}
-  .bar{height:6px;width:60px;border-radius:99px;margin:0 auto 16px;}
-  h1{font-family:'Gowun Batang',serif;font-size:32px;margin:0 0 4px;}
-  .en{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1px;}
-  .concept{color:var(--muted);margin-top:12px;}
-  .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;font-size:12.5px;color:var(--muted);}
-  .progress{margin:18px 0 0;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;display:flex;align-items:center;gap:10px;}
+  /* 공통 탑바/탭 */
+  .topbar{position:sticky;top:0;z-index:10;background:rgba(251,247,238,0.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+  .topbar .inner{max-width:680px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:12px;}
+  .topbar a.back{text-decoration:none;color:var(--muted);font-size:13px;border-bottom:1px dotted var(--muted);}
+  .tabs{display:flex;gap:6px;margin-left:auto;}
+  .tab{font-family:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--paper);
+    color:var(--muted);border-radius:99px;padding:7px 13px;cursor:pointer;}
+  .tab.on{color:#fff;border-color:transparent;}
+  /* 계량 폼 */
+  .wrap{max-width:680px;margin:0 auto;padding:18px 18px 90px;}
+  .mhead{text-align:center;padding:14px 0 6px;}
+  .mhead h1{font-family:'Gowun Batang',serif;font-size:26px;margin:0;}
+  .mhead .en{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;}
+  .progress{margin:14px 0 0;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:10px;}
   .pbar{flex:1;height:8px;background:var(--line);border-radius:99px;overflow:hidden;}
   .pfill{height:100%;border-radius:99px;transition:width .2s;}
-  section{padding:24px 0;border-top:1px solid var(--line);}
-  h2{font-family:'Gowun Batang',serif;font-size:21px;margin:0 0 14px;}
+  section.m{padding:22px 0;border-top:1px solid var(--line);}
+  section.m h2{font-family:'Gowun Batang',serif;font-size:20px;margin:0 0 12px;}
   .ro{line-height:1.75;}
-  .twist{font-weight:600;border-left:3px solid;padding-left:12px;margin:10px 0;}
   table{width:100%;border-collapse:collapse;font-size:14px;}
   td,th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;}
   th{font-size:12px;color:var(--muted);font-weight:600;}
@@ -38,8 +41,6 @@
   .amt{max-width:130px;font-family:'IBM Plex Mono',monospace;text-align:right;}
   .blank{background:#FFF6E8;}
   .filled{background:#F0F6EE;}
-  ol,ul{padding-left:20px;}
-  ol li,ul li{margin-bottom:10px;}
   .tip{font-size:12.5px;color:var(--muted);margin-top:3px;}
   .scores{display:flex;gap:12px;flex-wrap:wrap;}
   .score{text-align:center;}
@@ -47,12 +48,11 @@
   .score input{width:56px;text-align:center;font-family:'IBM Plex Mono',monospace;}
   .actions{position:sticky;bottom:0;background:rgba(251,247,238,0.95);backdrop-filter:blur(6px);
     border-top:1px solid var(--line);padding:12px 0;display:flex;gap:8px;flex-wrap:wrap;margin-top:24px;}
-  button{font-family:inherit;font-size:13.5px;font-weight:600;border-radius:10px;padding:9px 14px;cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink);}
+  button.act{font-family:inherit;font-size:13.5px;font-weight:600;border-radius:10px;padding:9px 14px;cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink);}
   button.primary{color:#fff;border:none;}
-  button:hover{filter:brightness(0.97);}
   .hint{font-size:12px;color:var(--muted);margin-top:6px;}
   .toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:var(--ink);color:#fff;
-    padding:10px 16px;border-radius:99px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;}
+    padding:10px 16px;border-radius:99px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;}
   .toast.show{opacity:1;}
 </style>
 </head>
@@ -68,16 +68,251 @@
 <script type="text/babel">
 const { useState, useEffect, useMemo } = React;
 const RECIPES = window.RECIPES || {};
+
+/* ============================================================
+   탭 1 — 원문 가이드 (분홍 루꼴라): reference/PinkRucolaKimchi_HomeCook.jsx 원문 그대로
+   ============================================================ */
+const C = {
+  bg: "#FBF3F1", paper: "#FFFBF6", ink: "#2E2724", muted: "#8C7E76",
+  brine: "#E07A93", brineDeep: "#C84E6C", brineLt: "#F4C2CE",
+  rucola: "#4E7A3E", rucolaLt: "#6FA04A",
+  cuke: "#BCD79E", cukeSkin: "#5E8C4A",
+  cherry: "#E24B4B", salt: "#FAF6EE", pear: "#C9A24B", line: "rgba(46,39,36,0.10)",
+};
+function Mono({ children, c }) {
+  return <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontWeight: 600, color: c || C.brineDeep }}>{children}</span>;
+}
+function Jar() {
+  return (
+    <svg viewBox="0 0 280 300" style={{ width: "100%", maxWidth: 300, height: "auto", display: "block", margin: "0 auto" }} role="img" aria-label="분홍 국물에 오이소박이와 루꼴라가 담기고 방울토마토가 올라간 김치 단면도">
+      <defs>
+        <linearGradient id="brineG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={C.brineLt} /><stop offset="100%" stopColor={C.brine} />
+        </linearGradient>
+        <clipPath id="jarClip"><path d="M58 86 Q58 78 70 76 L210 76 Q222 78 222 86 L222 268 Q222 284 204 284 L76 284 Q58 284 58 268 Z" /></clipPath>
+      </defs>
+      <rect x="64" y="58" width="152" height="20" rx="8" fill={C.salt} stroke={C.line} />
+      <path d="M58 86 Q58 78 70 76 L210 76 Q222 78 222 86 L222 268 Q222 284 204 284 L76 284 Q58 284 58 268 Z" fill={C.paper} stroke={C.brineDeep} strokeWidth="2.5" />
+      <g clipPath="url(#jarClip)">
+        <rect x="58" y="150" width="164" height="140" fill="url(#brineG)" opacity="0.92" />
+        <rect x="58" y="150" width="164" height="3" fill="#fff" opacity="0.5" />
+        {[[88, 168], [128, 158], [170, 172]].map(([x, y], i) => (
+          <g key={i}>
+            <rect x={x} y={y} width="26" height="104" rx="9" fill={C.cuke} stroke={C.cukeSkin} strokeWidth="2.5" />
+            <rect x={x + 8} y={y + 8} width="10" height="78" rx="5" fill={C.brineDeep} opacity="0.5" />
+          </g>
+        ))}
+        {[[80, 158, -18], [150, 150, 12], [196, 162, 24], [110, 178, -8]].map(([x, y, r], i) => (
+          <g key={i} transform={`translate(${x} ${y}) rotate(${r})`}>
+            <path d="M0 0 Q8 -10 18 -4 Q10 4 0 0Z" fill={C.rucola} />
+          </g>
+        ))}
+        {[[100, 230], [150, 250], [188, 220], [120, 265]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="1.6" fill="#fff" opacity="0.7" />)}
+      </g>
+      {[[96, 150], [140, 146], [184, 151]].map(([x, y], i) => (
+        <g key={i}>
+          <circle cx={x} cy={y} r="9" fill={C.cherry} />
+          <circle cx={x - 3} cy={y - 3} r="2.5" fill="#fff" opacity="0.55" />
+          <path d={`M${x} ${y - 9} l-3 -4 m3 4 l3 -4`} stroke={C.rucola} strokeWidth="1.6" fill="none" />
+        </g>
+      ))}
+      <rect x="58" y="200" width="164" height="32" fill="#fff" opacity="0.82" />
+      <text x="140" y="216" textAnchor="middle" fontFamily="'Gowun Batang', serif" fontSize="13" fill={C.brineDeep}>Pink Rucola Kimchi</text>
+      <text x="140" y="228" textAnchor="middle" fontFamily="'IBM Plex Mono', monospace" fontSize="8" fill={C.muted}>EASY · NO CHILI · 3 DAYS</text>
+    </svg>
+  );
+}
+const WHY = [
+  ["🌶️ 고춧가루 없음", "토마토·파프리카로 순한 분홍. 매운맛 부담 제로."],
+  ["🥬 진짜 발효 김치", "물김치 국물에 유산균이 산다. 샐러드가 아님."],
+  ["⏱️ 며칠이면 완성", "담그고 2~3일이면 먹기 좋다. 오래 안 기다림."],
+  ["🍅 흔한 재료", "토마토·루꼴라·오이. 어느 마트에나 있다."],
+];
+const STEPS = [
+  { no: "1", t: "Make the broth (감칠맛 물)", c: C.brineDeep,
+    body: "물에 다시마·말린 표고를 넣고, 건새우·북어포를 더해 냉장고에서 하룻밤 둔다. 끓이지 않는다.",
+    bodyV: "물에 다시마·말린 표고만 넣고 냉장고에서 하룻밤 둔다. 끓이지 않는다. 동물성 재료 없음.",
+    chip: [["우리기", "하룻밤 / overnight"]],
+    tip: "건새우·북어포가 감칠맛을 더한다. 없으면 다시마·표고만으로도 OK.",
+    tipV: "다시마(글루탐산) + 표고(구아닐산)의 감칠맛 시너지. 젓갈·해산물 0 → 완전 비건." },
+  { no: "2", t: "Pink sauce (분홍 양념)", c: C.brine,
+    body: "토마토·마늘·생강·파프리카가루·배(또는 사과)를 블렌더에 갈아 물과 섞는다. 곱게 거르면 더 맑다(선택).",
+    chip: [["토마토", "1차 옵션 · 생토마토"], ["국물 간", "약 2% 소금"]],
+    tip: "생토마토가 가장 쉽고 신선하다. 색은 핑크, 맛은 새콤달콤." },
+  { no: "3", t: "Quick-salt the veg (살짝 절이기)", c: C.rucola,
+    body: "루꼴라는 소금물에 아주 살짝(5분 이내). 오이는 짧게 토막 내 뜨겁지 않은 물에 살짝 담갔다 빼고, 가운데 속을 파낸다.",
+    chip: [["루꼴라", "5분 이내"], ["오이", "데치지 말고 살짝"]],
+    tip: "오이를 끓는 물에 오래 두면 물러진다. 따뜻한 물에 잠깐이면 충분." },
+  { no: "4", t: "Pack & ferment (담가서 익히기)", c: C.pear,
+    body: "오이 속에 루꼴라+양념을 채워 통에 담고, 남은 루꼴라와 함께 분홍 국물을 붓는다. 방울토마토를 위에 올려 장식.",
+    chip: [["실온", "반나절 (half-day)"], ["냉장", "2~3일"]],
+    tip: "실온에 잠깐 둬 발효를 깨운 뒤 냉장으로. 며칠 안에 먹으니 부담 없다." },
+];
+const TOMATO = [
+  { rank: "1차", name: "생토마토 (Fresh)", c: C.cherry, best: true,
+    note: "가장 쉽고 흔하다. 신선한 단맛·과즙. 며칠 안에 먹는 이 레시피엔 과발효가 문제 안 됨. 잘 익은 빨간 토마토." },
+  { rank: "2차", name: "토마토 가루 (Powder)", c: C.brineDeep, best: false,
+    note: "수분 없어 더 오래 보관·진한 색. 여행·선물용이나 오래 두고 먹을 때." },
+  { rank: "2차", name: "선드라이드 토마토", c: C.pear, best: false,
+    note: "감칠맛 폭발 + 씹는 맛. 잘게 다져 소박이 속에. 지중해 감성." },
+];
+const CULTURE = [
+  { r: "지중해 (이탈리아·스페인)", s: 5, note: "토마토+루꼴라가 일상. '발효 샐러드'로 가장 환영." },
+  { r: "미국·서유럽·호주", s: 4, note: "발효·헬시 트렌드 + 친숙한 재료. 따라 만들기 쉬움." },
+  { r: "동남아 (태국·베트남)", s: 4, note: "새콤·허브 물김치가 입맛과 통함." },
+  { r: "일본", s: 3, note: "순한 국물은 맞지만 토마토 김치는 낯섦." },
+  { r: "중동·인도", s: 2, note: "재료는 친숙하나 발효 채소 문화가 약함." },
+];
+function GEyebrow({ children }) { return <div style={{ fontSize: 11, letterSpacing: 2.5, color: C.brineDeep, fontWeight: 600, marginBottom: 14 }}>{children}</div>; }
+function GH2({ children }) { return <h2 style={{ fontFamily: "'Gowun Batang', serif", fontSize: 23, color: C.ink, margin: "0 0 16px", lineHeight: 1.3 }}>{children}</h2>; }
+function GSection({ children, top }) { return <section style={{ padding: "40px 0", borderTop: top ? `1px solid ${C.line}` : "none" }}>{children}</section>; }
+
+function PinkRucolaGuide() {
+  const [vegan, setVegan] = useState(false);
+  return (
+    <div style={{ background: C.bg }}>
+      <div className="pk" style={{ maxWidth: 620, margin: "0 auto", padding: "0 18px 70px" }}>
+        <header style={{ padding: "30px 0 8px", textAlign: "center" }}>
+          <GEyebrow>집에서 쉽게 · 며칠이면 완성</GEyebrow>
+          <h1 style={{ fontFamily: "'Gowun Batang', serif", fontSize: 36, lineHeight: 1.2, color: C.ink, margin: "0 0 6px" }}>분홍 루꼴라 김치</h1>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: C.brineDeep, letterSpacing: 1, marginBottom: 14 }}>PINK RUCOLA KIMCHI</div>
+          <p style={{ fontSize: 14, color: C.muted, lineHeight: 1.7, maxWidth: 430, margin: "0 auto 24px" }}>
+            고춧가루 없이 <b style={{ color: C.brineDeep }}>토마토</b>로 물들인 순한 물김치. 부추 대신 <b style={{ color: C.rucola }}>루꼴라</b>, 위엔 <b style={{ color: C.cherry }}>방울토마토</b>. 누구나 집에서 따라 만들 수 있게.
+          </p>
+          <Jar />
+        </header>
+
+        <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 4 }}>
+          {[[false, "기본", "건새우·북어 + 다시마·표고"], [true, "비건", "다시마·표고만"]].map(([v, lbl, sub]) => {
+            const on = vegan === v; const ac = v ? C.rucola : C.brineDeep;
+            return (
+              <button key={lbl} onClick={() => setVegan(v)}
+                style={{ flex: "1 1 0", maxWidth: 200, padding: "10px 12px", borderRadius: 12, cursor: "pointer", textAlign: "center",
+                  border: on ? `2px solid ${ac}` : `1px solid ${C.line}`, background: on ? ac : C.paper, color: on ? "#fff" : C.ink, transition: "all .2s", fontFamily: "inherit" }}>
+                <div style={{ fontSize: 13.5, fontWeight: 700 }}>{v ? "🌱 " : ""}{lbl}</div>
+                <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>{sub}</div>
+              </button>
+            );
+          })}
+        </div>
+        {vegan && (
+          <div style={{ fontSize: 12, color: C.rucola, textAlign: "center", marginTop: 10, lineHeight: 1.5 }}>
+            건새우·북어를 빼고 <b>다시마·표고만</b>으로 감칠맛을 내 <b>완전 비건</b>. 채식·종교적 제약이 있는 사람에게도 권할 수 있어요.
+          </div>
+        )}
+
+        <GSection>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {WHY.map(([t, d]) => (
+              <div key={t} style={{ background: C.paper, border: `1px solid ${C.line}`, borderRadius: 12, padding: "12px 14px" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.ink, marginBottom: 4 }}>{t}</div>
+                <div style={{ fontSize: 11.5, color: C.muted, lineHeight: 1.45 }}>{d}</div>
+              </div>
+            ))}
+          </div>
+        </GSection>
+
+        <GSection top>
+          <GEyebrow>레시피 · 4단계</GEyebrow>
+          <GH2>이렇게 만들어요</GH2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {STEPS.map((s) => (
+              <div key={s.no} style={{ background: C.paper, border: `1px solid ${C.line}`, borderRadius: 14, padding: 16, borderLeft: `4px solid ${s.c}` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                  <span style={{ width: 24, height: 24, borderRadius: 7, background: s.c, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, fontWeight: 600, flexShrink: 0 }}>{s.no}</span>
+                  <h3 style={{ fontFamily: "'Gowun Batang', serif", fontSize: 16.5, color: C.ink, margin: 0 }}>{s.t}</h3>
+                  {s.no === "1" && vegan && <span style={{ fontSize: 10, color: "#fff", background: C.rucola, padding: "2px 7px", borderRadius: 99, fontWeight: 600 }}>비건</span>}
+                </div>
+                <p style={{ fontSize: 13, color: C.ink, lineHeight: 1.55, margin: "0 0 10px" }}>{vegan && s.bodyV ? s.bodyV : s.body}</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
+                  {s.chip.map(([k, v]) => (
+                    <span key={k} style={{ fontSize: 11.5, background: `${s.c}14`, borderRadius: 8, padding: "4px 9px", color: C.ink }}>{k} <Mono c={s.c}>{v}</Mono></span>
+                  ))}
+                </div>
+                <div style={{ fontSize: 11.5, color: C.muted, lineHeight: 1.55, paddingTop: 8, borderTop: `1px dashed ${C.line}` }}>
+                  <b style={{ color: s.c }}>팁 </b>{vegan && s.tipV ? s.tipV : s.tip}
+                </div>
+              </div>
+            ))}
+          </div>
+        </GSection>
+
+        <GSection top>
+          <GEyebrow>토마토, 무엇을 쓸까</GEyebrow>
+          <GH2>생토마토면 충분해요</GH2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {TOMATO.map((t) => (
+              <div key={t.name} style={{ background: C.paper, border: t.best ? `2px solid ${t.c}` : `1px solid ${C.line}`, borderRadius: 14, padding: 16 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                  <span style={{ fontSize: 10.5, fontWeight: 700, color: "#fff", background: t.c, padding: "2px 8px", borderRadius: 99 }}>{t.rank}</span>
+                  <span style={{ fontFamily: "'Gowun Batang', serif", fontSize: 16, color: C.ink }}>{t.name}</span>
+                  {t.best && <span style={{ fontSize: 10.5, color: t.c, fontWeight: 600 }}>★ 가장 쉬움</span>}
+                </div>
+                <div style={{ fontSize: 12.5, color: C.muted, lineHeight: 1.55 }}>{t.note}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ fontSize: 11.5, color: C.muted, marginTop: 12, lineHeight: 1.6, background: `${C.cherry}10`, borderRadius: 10, padding: "10px 14px" }}>
+            며칠 안에 먹는 레시피라 생토마토의 빠른 발효는 걱정 없어요. 오이만 단단한 걸 골라 살짝 절이면 아삭함이 유지됩니다.
+          </div>
+        </GSection>
+
+        <GSection top>
+          <GEyebrow>마무리</GEyebrow>
+          <GH2>방울토마토로 예쁘게</GH2>
+          <div style={{ background: C.paper, border: `1px solid ${C.line}`, borderRadius: 14, padding: 18, display: "flex", gap: 14, alignItems: "center" }}>
+            <div style={{ width: 54, height: 54, borderRadius: 99, background: `${C.cherry}1a`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>🍅</div>
+            <div style={{ fontSize: 13, color: C.ink, lineHeight: 1.6 }}>
+              먹기 직전 <b style={{ color: C.cherry }}>방울토마토</b>를 반 갈라 위에 올리면 분홍 국물과 색이 어우러져 한 그릇이 화사해집니다. 그릇째 식탁에, 또는 SNS 한 컷.
+            </div>
+          </div>
+        </GSection>
+
+        <GSection top>
+          <GEyebrow>문화 전파</GEyebrow>
+          <GH2>어디서 잘 통할까</GH2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {CULTURE.map((c) => (
+              <div key={c.r} style={{ background: C.paper, border: `1px solid ${C.line}`, borderRadius: 12, padding: "12px 14px" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 3 }}>
+                  <span style={{ fontSize: 13, color: C.ink, fontWeight: 600 }}>{c.r}</span>
+                  <span style={{ display: "inline-flex", gap: 3 }}>
+                    {[1, 2, 3, 4, 5].map((i) => <span key={i} style={{ width: 7, height: 7, borderRadius: 99, background: i <= c.s ? (c.s >= 4 ? C.rucola : c.s === 3 ? C.pear : C.brineDeep) : "rgba(0,0,0,0.1)" }} />)}
+                  </span>
+                </div>
+                <div style={{ fontSize: 11.5, color: C.muted, lineHeight: 1.5 }}>{c.note}</div>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: 12.5, color: C.muted, marginTop: 14, lineHeight: 1.6 }}>
+            친숙한 재료 + 매운맛·젓갈 없음 + 짧은 발효 = <b style={{ color: C.ink }}>외국인이 가장 따라 하기 쉬운 김치</b>. 한국 김치를 처음 접하는 사람에게 권하기 좋은 '입문 김치'예요.
+          </p>
+        </GSection>
+
+        <GSection top>
+          <div style={{ background: C.brineDeep, borderRadius: 16, padding: 22, color: "#fff", textAlign: "center" }}>
+            <div style={{ fontFamily: "'Gowun Batang', serif", fontSize: 18, marginBottom: 8 }}>3-day Pink Kimchi</div>
+            <div style={{ fontSize: 12.5, lineHeight: 1.7, opacity: 0.92 }}>
+              감칠맛 물 (하룻밤) → 토마토·파프리카 분홍 양념 → 루꼴라·오이 살짝 절임 → 한 통에 담아 반나절 실온 + 냉장 2~3일 → 방울토마토 올려 완성
+            </div>
+          </div>
+        </GSection>
+      </div>
+    </div>
+  );
+}
+const GUIDES = { "pink-rucola-kimchi": PinkRucolaGuide };
+
+/* ============================================================
+   탭 2 — 계량 정보 (입력)
+   ============================================================ */
 const SCORE_KEYS = { flavor: "맛·향", texture: "식감", visual: "비주얼", ferment: "발효", uniqueness: "차별성" };
-const FERM_LABEL = { live: "🥬 진짜 김치", flavor: "🍶 가공품" };
 
 function toast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("show");
   setTimeout(() => t.classList.remove("show"), 1600);
 }
-
-// 편집 가능한 필드 기본 구조 (recipe로부터 시드)
 function seedEdits(r) {
   return {
     total_time: r.total_time || "",
@@ -92,69 +327,48 @@ function seedEdits(r) {
     }
   };
 }
-
-// 빈칸 진행률 계산: 채워야 할 핵심 필드들
 function progress(r, e) {
-  const fields = [];
-  e.ingredients.forEach(a => fields.push(!!a.trim()));
-  fields.push(!!e.brine.time.trim(), !!e.brine.temp.trim());
-  e.ferment.forEach(f => fields.push(!!String(f.temp).trim()));
-  fields.push(!!e.storage.trim());
-  Object.keys(SCORE_KEYS).forEach(k => fields.push(e.tasting[k] !== "" && e.tasting[k] != null));
-  const done = fields.filter(Boolean).length;
-  return { done, total: fields.length, pct: Math.round(done / fields.length * 100) };
+  const f = [];
+  e.ingredients.forEach(a => f.push(!!a.trim()));
+  f.push(!!e.brine.time.trim(), !!e.brine.temp.trim());
+  e.ferment.forEach(x => f.push(!!String(x.temp).trim()));
+  f.push(!!e.storage.trim());
+  Object.keys(SCORE_KEYS).forEach(k => f.push(e.tasting[k] !== "" && e.tasting[k] != null));
+  const done = f.filter(Boolean).length;
+  return { done, total: f.length, pct: Math.round(done / f.length * 100) };
 }
-
 function buildMarkdown(r, e) {
   const L = [];
-  L.push(`# ${r.name} · ${r.name_en || ""}`.trim());
-  L.push("", `- 분량: ${r.servings} · 소요: ${e.total_time || "___"}`, "");
-  L.push("## 계량 재료");
+  L.push(`# ${r.name} · ${r.name_en || ""}`.trim(), "", `- 분량: ${r.servings} · 소요: ${e.total_time || "___"}`, "", "## 계량 재료");
   let g = null;
   r.ingredients.forEach((it, i) => {
-    if (it.group !== g) { g = it.group; L.push(`### ${g}`); L.push("| 재료 | 분량 | 메모 |", "|---|---|---|"); }
+    if (it.group !== g) { g = it.group; L.push(`### ${g}`, "| 재료 | 분량 | 메모 |", "|---|---|---|"); }
     L.push(`| ${it.item} | ${e.ingredients[i] || "___"} | ${it.note || ""} |`);
   });
-  L.push("", "## 절임 스펙",
-    `- 소금 농도: ${e.brine.salinity || "___"}`,
-    `- 시간: ${e.brine.time || "___"} · 온도: ${e.brine.temp || "___"}`,
-    `- 목표: ${e.brine.target || "___"}`, "");
-  L.push("## 작업 순서");
+  L.push("", "## 절임 스펙", `- 소금 농도: ${e.brine.salinity || "___"}`, `- 시간: ${e.brine.time || "___"} · 온도: ${e.brine.temp || "___"}`, `- 목표: ${e.brine.target || "___"}`, "", "## 작업 순서");
   r.steps.forEach((s, i) => L.push(`${i + 1}. [${s.phase || ""}] ${s.text}${s.tip ? `  (팁: ${s.tip})` : ""}`));
   L.push("", "## 발효 일정", "| 구간 | 온도 | 기간 | 목표 |", "|---|---|---|---|");
-  (r.ferment_schedule || []).forEach((f, i) =>
-    L.push(`| ${f.stage} | ${e.ferment[i]?.temp || "___"} | ${e.ferment[i]?.duration || "___"} | ${e.ferment[i]?.goal || ""} |`));
-  L.push(`- 먹기 좋은 시점: ${e.best_after || "___"}`, `- 보관: ${e.storage || "___"}`, "");
-  L.push("## 시식 평가");
+  (r.ferment_schedule || []).forEach((f, i) => L.push(`| ${f.stage} | ${e.ferment[i]?.temp || "___"} | ${e.ferment[i]?.duration || "___"} | ${f.goal || ""} |`));
+  L.push(`- 먹기 좋은 시점: ${e.best_after || "___"}`, `- 보관: ${e.storage || "___"}`, "", "## 시식 평가");
   Object.entries(SCORE_KEYS).forEach(([k, lab]) => L.push(`- ${lab}: ${e.tasting[k] === "" ? "___" : e.tasting[k]}/3`));
   if (e.tasting.comment) L.push(`- 총평: ${e.tasting.comment}`);
   return L.join("\n");
 }
+function MSection({ title, children }) { return <section className="m"><h2>{title}</h2>{children}</section>; }
 
-function Section({ title, children }) { return <section><h2>{title}</h2>{children}</section>; }
-
-function App() {
-  const slugs = Object.keys(RECIPES);
-  const hash = (location.hash || "").replace("#", "");
-  const slug = RECIPES[hash] ? hash : slugs[0];
-  const r = RECIPES[slug];
-  if (!r) return <div className="wrap"><p>레시피 데이터가 없습니다.</p></div>;
-
-  const C = { brand: (r.palette || [])[0] || "#C84E6C", accent: (r.palette || [])[1] || "#4E7A3E" };
-  const storeKey = "recipe-edits:" + slug;
+function MeasureForm({ r, accent }) {
+  const storeKey = "recipe-edits:" + r.slug;
   const [e, setE] = useState(() => {
     try { const s = localStorage.getItem(storeKey); if (s) return { ...seedEdits(r), ...JSON.parse(s) }; } catch (_) {}
     return seedEdits(r);
   });
   useEffect(() => { try { localStorage.setItem(storeKey, JSON.stringify(e)); } catch (_) {} }, [e]);
-
   const p = useMemo(() => progress(r, e), [e]);
   const set = (patch) => setE(prev => ({ ...prev, ...patch }));
   const setIng = (i, v) => setE(prev => { const a = [...prev.ingredients]; a[i] = v; return { ...prev, ingredients: a }; });
   const setFerm = (i, key, v) => setE(prev => { const a = prev.ferment.map(x => ({ ...x })); a[i][key] = v; return { ...prev, ferment: a }; });
   const setBrine = (key, v) => setE(prev => ({ ...prev, brine: { ...prev.brine, [key]: v } }));
   const setScore = (key, v) => setE(prev => ({ ...prev, tasting: { ...prev.tasting, [key]: v } }));
-
   const cls = (v) => v && String(v).trim() ? "filled" : "blank";
 
   const copyMd = async () => {
@@ -163,86 +377,60 @@ function App() {
     catch (_) { window.prompt("복사하세요 (Ctrl+C):", md); }
   };
   const downloadJson = () => {
-    const blob = new Blob([JSON.stringify({ slug, edits: e }, null, 2)], { type: "application/json" });
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-    a.download = slug + "-filled.json"; a.click(); toast("JSON 내려받음");
+    const blob = new Blob([JSON.stringify({ slug: r.slug, edits: e }, null, 2)], { type: "application/json" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = r.slug + "-filled.json"; a.click(); toast("JSON 내려받음");
   };
   const reset = () => { if (confirm("입력한 값을 모두 지울까요?")) { localStorage.removeItem(storeKey); setE(seedEdits(r)); toast("초기화됨"); } };
 
   let lastGroup = null;
   return (
     <div className="wrap">
-      <div className="topbar">
-        <a href="./index.html">← 아이디어 Pool</a>
-        <span style={{ color: C.brand, fontWeight: 600 }}>My Recipes · 심화</span>
-      </div>
-
-      <header>
-        <div className="bar" style={{ background: C.brand }} />
+      <div className="mhead">
         <h1>{r.name}</h1>
-        {r.name_en && <div className="en" style={{ color: C.brand }}>{r.name_en.toUpperCase()}</div>}
-        {r.concept && <p className="concept">{r.concept}</p>}
-        <div className="badges">
-          <span>{FERM_LABEL[r.ferment]}</span><span>· {r.servings}</span>
-          {r.target && <span>· 타깃 {r.target}</span>}
-          {r.status === "draft" && <span>· ✍️ 작성 중</span>}
-        </div>
+        {r.name_en && <div className="en" style={{ color: accent }}>{r.name_en.toUpperCase()} · 계량 정보</div>}
         <div className="progress">
           <span>채움</span>
-          <div className="pbar"><div className="pfill" style={{ width: p.pct + "%", background: C.accent }} /></div>
+          <div className="pbar"><div className="pfill" style={{ width: p.pct + "%", background: accent }} /></div>
           <span style={{ fontFamily: "'IBM Plex Mono',monospace" }}>{p.done}/{p.total}</span>
         </div>
-        <div className="hint">노란 칸은 아직 빈 칸, 초록 칸은 채워진 칸. 입력하면 이 기기에 자동 저장됩니다.</div>
-      </header>
+        <div className="hint">노란 칸=빈칸, 초록 칸=채움. 입력하면 이 기기에 자동 저장됩니다. 원문 가이드는 위 [원문 가이드] 탭.</div>
+      </div>
 
-      {/* 맥락 (읽기 전용) */}
-      {(r.story || r.twist) && <Section title="왜 이 김치인가">
-        {r.story && <p className="ro">{r.story}</p>}
-        {r.twist && <p className="twist" style={{ borderColor: C.accent }}>{r.twist}</p>}
-      </Section>}
-
-      {/* 계량 재료 (입력) */}
-      <Section title={`계량 재료 · ${r.servings}`}>
+      <MSection title={`계량 재료 · ${r.servings}`}>
         <table><tbody>
           {r.ingredients.map((it, i) => {
             const hdr = it.group !== lastGroup ? (lastGroup = it.group) : null;
             return (
               <React.Fragment key={i}>
-                {hdr && <tr><td className="grouphdr" colSpan={3} style={{ color: C.brand }}>{hdr}</td></tr>}
+                {hdr && <tr><td className="grouphdr" colSpan={3} style={{ color: accent }}>{hdr}</td></tr>}
                 <tr>
                   <td style={{ width: "40%" }}>{it.item}</td>
-                  <td style={{ width: "30%" }}>
-                    <input type="text" className={"amt " + cls(e.ingredients[i])} placeholder="분량"
-                      value={e.ingredients[i]} onChange={ev => setIng(i, ev.target.value)} />
-                  </td>
+                  <td style={{ width: "30%" }}><input type="text" className={"amt " + cls(e.ingredients[i])} placeholder="분량" value={e.ingredients[i]} onChange={ev => setIng(i, ev.target.value)} /></td>
                   <td style={{ color: "var(--muted)", fontSize: 12.5 }}>{it.note}</td>
                 </tr>
               </React.Fragment>
             );
           })}
         </tbody></table>
-      </Section>
+      </MSection>
 
-      {/* 절임 스펙 (입력) */}
-      <Section title="절임 스펙">
+      <MSection title="절임 스펙">
         <table><tbody>
           <tr><td style={{ width: "30%" }}>소금 농도</td><td><input type="text" className={cls(e.brine.salinity)} value={e.brine.salinity} onChange={ev => setBrine("salinity", ev.target.value)} placeholder="예: 2%" /></td></tr>
           <tr><td>절임 시간</td><td><input type="text" className={cls(e.brine.time)} value={e.brine.time} onChange={ev => setBrine("time", ev.target.value)} placeholder="예: 5분 / 30초" /></td></tr>
           <tr><td>온도</td><td><input type="text" className={cls(e.brine.temp)} value={e.brine.temp} onChange={ev => setBrine("temp", ev.target.value)} placeholder="예: 따뜻한 물 ___℃" /></td></tr>
         </tbody></table>
         {r.brine?.target && <p className="tip">목표 상태: {r.brine.target}</p>}
-      </Section>
+      </MSection>
 
-      {/* 작업 순서 (읽기 전용) */}
-      <Section title="작업 순서">
-        <ol>{r.steps.map((s, i) => <li key={i}>
-          {s.phase && <b style={{ color: C.brand }}>[{s.phase}] </b>}{s.text}
+      <MSection title="작업 순서">
+        <ol>{r.steps.map((s, i) => <li key={i} style={{ marginBottom: 10 }}>
+          {s.phase && <b style={{ color: accent }}>[{s.phase}] </b>}{s.text}
           {s.tip && <div className="tip">💡 {s.tip}</div>}
         </li>)}</ol>
-      </Section>
+      </MSection>
 
-      {/* 발효 일정 (입력) */}
-      <Section title="발효 일정">
+      <MSection title="발효 일정">
         <table>
           <thead><tr><th>구간</th><th>온도</th><th>기간</th><th>목표</th></tr></thead>
           <tbody>{(r.ferment_schedule || []).map((f, i) => <tr key={i}>
@@ -256,13 +444,9 @@ function App() {
           <tr><td style={{ width: "30%" }}>먹기 좋은 시점</td><td><input type="text" className={cls(e.best_after)} value={e.best_after} onChange={ev => set({ best_after: ev.target.value })} /></td></tr>
           <tr><td>보관(며칠까지)</td><td><input type="text" className={cls(e.storage)} value={e.storage} onChange={ev => set({ storage: ev.target.value })} placeholder="실습으로 확인" /></td></tr>
         </tbody></table>
-      </Section>
+      </MSection>
 
-      {/* 플레이팅 (읽기 전용) */}
-      {r.plating && <Section title="플레이팅"><p className="ro">{r.plating}</p></Section>}
-
-      {/* 시식 평가 (입력) */}
-      <Section title="시식 평가 (각 0~3점)">
+      <MSection title="시식 평가 (각 0~3점)">
         <div className="scores">
           {Object.entries(SCORE_KEYS).map(([k, lab]) => (
             <div className="score" key={k}>
@@ -272,20 +456,42 @@ function App() {
             </div>
           ))}
         </div>
-        <textarea style={{ marginTop: 12 }} rows={2} placeholder="총평·코멘트"
-          value={e.tasting.comment} onChange={ev => setScore("comment", ev.target.value)} />
-      </Section>
-
-      {/* 변형·실패 (읽기 전용) */}
-      {r.variations?.length > 0 && <Section title="변형 · 옵션"><ul className="ro">{r.variations.map((v, i) => <li key={i}>{v}</li>)}</ul></Section>}
-      {r.pitfalls?.length > 0 && <Section title="실패 포인트 & 회피"><ul className="ro">{r.pitfalls.map((v, i) => <li key={i}>{v}</li>)}</ul></Section>}
+        <textarea style={{ marginTop: 12 }} rows={2} placeholder="총평·코멘트" value={e.tasting.comment} onChange={ev => setScore("comment", ev.target.value)} />
+      </MSection>
 
       <div className="actions">
-        <button className="primary" style={{ background: C.brand }} onClick={copyMd}>📋 마크다운 복사</button>
-        <button onClick={downloadJson}>⬇ JSON 내려받기</button>
-        <button onClick={reset} style={{ marginLeft: "auto", color: "var(--muted)" }}>초기화</button>
+        <button className="act primary" style={{ background: accent }} onClick={copyMd}>📋 마크다운 복사</button>
+        <button className="act" onClick={downloadJson}>⬇ JSON 내려받기</button>
+        <button className="act" onClick={reset} style={{ marginLeft: "auto", color: "var(--muted)" }}>초기화</button>
       </div>
       <p className="hint">채운 값은 <b>마크다운 복사</b> 또는 <b>JSON 내려받기</b>로 Nick에게 전달 → 정식 레시피(recipe.md)에 반영됩니다.</p>
+    </div>
+  );
+}
+
+/* ============================================================
+   App — 탭 셸
+   ============================================================ */
+function App() {
+  const slugs = Object.keys(RECIPES);
+  const hash = (location.hash || "").replace("#", "");
+  const slug = RECIPES[hash] ? hash : slugs[0];
+  const r = RECIPES[slug];
+  if (!r) return <div className="wrap"><p>레시피 데이터가 없습니다.</p></div>;
+  const accent = (r.palette || [])[0] || "#C84E6C";
+  const Guide = GUIDES[slug];
+  const [tab, setTab] = useState(Guide ? "guide" : "measure");
+
+  return (
+    <div>
+      <div className="topbar"><div className="inner">
+        <a className="back" href="./index.html">← 아이디어 Pool</a>
+        <div className="tabs">
+          {Guide && <button className={"tab" + (tab === "guide" ? " on" : "")} style={tab === "guide" ? { background: accent } : null} onClick={() => setTab("guide")}>📖 원문 가이드</button>}
+          <button className={"tab" + (tab === "measure" ? " on" : "")} style={tab === "measure" ? { background: accent } : null} onClick={() => setTab("measure")}>📐 계량 정보</button>
+        </div>
+      </div></div>
+      {tab === "guide" && Guide ? <Guide /> : <MeasureForm r={r} accent={accent} />}
     </div>
   );
 }

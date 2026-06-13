@@ -10,6 +10,11 @@ metadata:
 확정 레시피(`recipes/<slug>/recipe.md`)를 **깊게 보여주는 심화앱 페이지**로 만든다.
 탐색앱(`index.html`, 아이디어 pool)과 함께 **레시피 포털 v0**(MASTERPLAN Phase 1.5)를 구성.
 
+## 심화앱 = 2탭 구조 (중요)
+1. **📖 원문 가이드** — 최초 소스(원본 아티팩트, 예: `reference/<...>_HomeCook.jsx`)를 **거의 그대로** 보존. 일러스트·콘셉트·문화 적합성 등 풍부한 원문이 1차 콘텐츠. slug→가이드 컴포넌트(`GUIDES` 맵)로 등록.
+2. **📐 계량 정보** — 그 위에 **추가**되는 정량/입력 페이지. 분량·시간·온도·시식을 빈칸 입력(localStorage 저장 + 마크다운/JSON 내보내기).
+> 원문 가이드가 기본 탭. 원본 소스를 압축·재작성하지 말 것 — 보존하고 계량 페이지를 덧붙인다.
+
 ## 산출물 위치
 - `assets/recipes.json` — 확정 레시피들의 구조화 데이터 배열 (각 항목 = [recipe.schema.json](assets/recipe.schema.json) 준수)
 - `assets/recipes.js` — 위 임베드 사본(`window.RECIPES`), file:// 대응
