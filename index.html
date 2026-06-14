@@ -51,6 +51,8 @@
   .cbody{padding:15px 16px 16px;display:flex;flex-direction:column;gap:9px;flex:1;}
   .cardtop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
   .cname{font-family:'Gowun Batang',serif;font-size:18px;font-weight:700;line-height:1.25;}
+  .fmtchip{font-family:'IBM Plex Sans KR',sans-serif;font-size:10.5px;font-weight:600;color:var(--ongi);
+    background:var(--sogeum);border:1px solid var(--line);border-radius:99px;padding:1px 7px;margin-left:6px;vertical-align:middle;white-space:nowrap;}
   .ferm{font-size:15px;flex:none;}
   .concept{font-size:13px;color:var(--muted);}
   .ings{display:flex;flex-wrap:wrap;gap:5px;}
@@ -85,6 +87,7 @@ const { useState, useMemo } = React;
 const D = window.KIMCHI_DATA;
 const { CAT, TGT, REF, FERM } = D.meta;
 const IDEAS = D.ideas;
+const FMT = { kit: "🧰 키트", sauce: "🥣 소스", powder: "🧂 파우더" };
 
 function Lv({ n }) {
   return <span className="lv">{[1,2,3].map(i =>
@@ -99,7 +102,7 @@ function Card({ idea }) {
       <div className="swatch" style={{background: idea.color}} />
       <div className="cbody">
         <div className="cardtop">
-          <div className="cname">{idea.name}</div>
+          <div className="cname">{idea.name}{idea.format && <span className="fmtchip">{FMT[idea.format]}</span>}</div>
           <div className="ferm" title={ferm.label}>{ferm.icon}</div>
         </div>
         <div className="concept">{idea.concept}</div>

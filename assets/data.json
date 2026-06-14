@@ -1134,6 +1134,184 @@
       "color": "#7FB05A",
       "level": 1,
       "ferment": "live"
+    },
+    {
+      "cat": "spec",
+      "tgt": "신세대",
+      "name": "미니 김치 키트(1~2인)",
+      "concept": "양념 1팩 + 채소만 넣으면 끝, 소량",
+      "ingredients": [
+        "양념팩",
+        "배추/무",
+        "계량 가이드"
+      ],
+      "twist": "소량·실패방지·간편",
+      "ref": "maybe",
+      "color": "#E07A93",
+      "level": 1,
+      "ferment": "live",
+      "format": "kit",
+      "id": 63
+    },
+    {
+      "cat": "spec",
+      "tgt": "신세대",
+      "name": "냉동 양념 큐브",
+      "concept": "냉동 양념 큐브, 채소만 버무리면 완성",
+      "ingredients": [
+        "냉동 양념큐브",
+        "무/배추"
+      ],
+      "twist": "즉석 깍두기·겉절이",
+      "ref": "maybe",
+      "color": "#C84E6C",
+      "level": 1,
+      "ferment": "live",
+      "format": "kit",
+      "id": 64
+    },
+    {
+      "cat": "spec",
+      "tgt": "외국인",
+      "name": "절임 정량 키트",
+      "concept": "계량스푼+소금농도 카드로 절임 실패 0",
+      "ingredients": [
+        "천일염",
+        "계량스푼",
+        "농도 카드"
+      ],
+      "twist": "초보 절임 가이드의 제품화",
+      "ref": "maybe",
+      "color": "#5A8CA8",
+      "level": 1,
+      "ferment": "live",
+      "format": "kit",
+      "id": 65
+    },
+    {
+      "cat": "spec",
+      "tgt": "외국인",
+      "name": "백김치 입문 키트",
+      "concept": "무매움 백김치 양념팩+가이드",
+      "ingredients": [
+        "백김치 양념팩",
+        "배추",
+        "배"
+      ],
+      "twist": "외국인 첫 김치",
+      "ref": "maybe",
+      "color": "#E8DCC0",
+      "level": 1,
+      "ferment": "live",
+      "format": "kit",
+      "id": 66
+    },
+    {
+      "cat": "spec",
+      "tgt": "외국인",
+      "name": "김치 파우더",
+      "concept": "묵은지 건조·분쇄 만능 시즈닝",
+      "ingredients": [
+        "묵은지",
+        "건조",
+        "분쇄"
+      ],
+      "twist": "팝콘·라면·아보카도 토핑",
+      "ref": "maybe",
+      "color": "#B23A2B",
+      "level": 1,
+      "ferment": "flavor",
+      "format": "powder",
+      "id": 67
+    },
+    {
+      "cat": "spec",
+      "tgt": "외국인",
+      "name": "김치 시즈닝 솔트",
+      "concept": "김치파우더+소금, 만능 소금",
+      "ingredients": [
+        "김치파우더",
+        "소금"
+      ],
+      "twist": "스테이크·감자튀김",
+      "ref": "maybe",
+      "color": "#C0392B",
+      "level": 1,
+      "ferment": "flavor",
+      "format": "powder",
+      "id": 68
+    },
+    {
+      "cat": "spec",
+      "tgt": "외국인",
+      "name": "김치 핫소스",
+      "concept": "묵은지+식초 발효 핫소스",
+      "ingredients": [
+        "묵은지",
+        "식초",
+        "마늘"
+      ],
+      "twist": "미국 핫소스 시장",
+      "ref": "maybe",
+      "color": "#D8452F",
+      "level": 2,
+      "ferment": "flavor",
+      "format": "sauce",
+      "id": 69
+    },
+    {
+      "cat": "spec",
+      "tgt": "외국인",
+      "name": "김치 마요(아이올리)",
+      "concept": "김치 다져 넣은 마요 딥",
+      "ingredients": [
+        "김치",
+        "마요",
+        "마늘"
+      ],
+      "twist": "샌드위치·감튀 딥",
+      "ref": "maybe",
+      "color": "#E3C94A",
+      "level": 1,
+      "ferment": "flavor",
+      "format": "sauce",
+      "id": 70
+    },
+    {
+      "cat": "spec",
+      "tgt": "외국인",
+      "name": "김치 오일·라유",
+      "concept": "김치·고추 향 낸 양념 기름",
+      "ingredients": [
+        "김치",
+        "식용유",
+        "고추"
+      ],
+      "twist": "파스타·계란에 한 스푼",
+      "ref": "maybe",
+      "color": "#C9682E",
+      "level": 2,
+      "ferment": "flavor",
+      "format": "sauce",
+      "id": 71
+    },
+    {
+      "cat": "spec",
+      "tgt": "외국인",
+      "name": "김치 육수 큐브",
+      "concept": "김치 농축 육수 큐브",
+      "ingredients": [
+        "김치",
+        "채수",
+        "농축"
+      ],
+      "twist": "찌개·라면 베이스",
+      "ref": "maybe",
+      "color": "#9A6B3F",
+      "level": 2,
+      "ferment": "flavor",
+      "format": "sauce",
+      "id": 72
     }
   ]
 }
