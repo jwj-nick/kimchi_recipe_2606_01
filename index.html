@@ -130,8 +130,15 @@ function App() {
   const [newOnly, setNewOnly] = useState(false);
   const [qstr, setQstr] = useState("");
 
+  const matchCat = (x) => {
+    if (cat === "all") return true;
+    if (cat === "kit") return x.format === "kit";
+    if (cat === "processed") return x.ferment === "flavor";   // 소스·파우더 등 가공품
+    return x.cat === cat;
+  };
+
   const list = useMemo(() => IDEAS.filter(x => {
-    if (cat !== "all" && x.cat !== cat) return false;
+    if (!matchCat(x)) return false;
     if (cat === "spec" && tgt !== "all" && x.tgt !== tgt) return false;
     if (ref !== "all" && x.ref !== ref) return false;
     if (newOnly && x.ref !== "new") return false;
@@ -142,9 +149,10 @@ function App() {
     return true;
   }), [cat, tgt, ref, newOnly, qstr]);
 
+  const CATC = { trad: CAT.trad.c, novel: CAT.novel.c, spec: CAT.spec.c, kit: "#9A6B3F", processed: "#C9982E" };
   const catChip = (k, label) =>
     <button className={"chip"+(cat===k?" on":"")}
-      style={cat===k&&k!=="all"?{"--cc":CAT[k]?.c}:null}
+      style={cat===k&&k!=="all"?{"--cc":CATC[k]}:null}
       data-c={k!=="all"?"":undefined}
       onClick={()=>{setCat(k); if(k!=="spec") setTgt("all");}}>{label}</button>;
 
@@ -161,10 +169,15 @@ function App() {
           <span className="stat">특화 <b>{IDEAS.filter(i=>i.cat==="spec").length}</b></span>
           <span className="stat">🥬 새것 <b>{IDEAS.filter(i=>i.ref==="new").length}</b></span>
         </div>
-        <div style={{marginTop:16}}>
+        <div style={{marginTop:16,display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
           <a href="./recipe.html" style={{display:"inline-block",background:"#C84E6C",color:"#fff",
             textDecoration:"none",fontWeight:600,fontSize:13.5,padding:"9px 16px",borderRadius:99}}>
             📖 나만의 레시피(심화) 보기 →
+          </a>
+          <a href="https://jwj-nick.github.io/kimchi_study_2606_01/" target="_blank" rel="noopener"
+            style={{display:"inline-block",background:"var(--paper)",color:"var(--ink)",border:"1px solid var(--line)",
+            textDecoration:"none",fontWeight:600,fontSize:13.5,padding:"9px 16px",borderRadius:99}}>
+            🔬 김치 Phytate 스터디 →
           </a>
         </div>
       </header>
@@ -176,6 +189,8 @@ function App() {
           {catChip("trad", CAT.trad.label)}
           {catChip("novel", CAT.novel.label)}
           {catChip("spec", CAT.spec.label)}
+          {catChip("kit", "🧰 키트")}
+          {catChip("processed", "🍶 가공품")}
           <label className="toggle">
             <input type="checkbox" checked={newOnly} onChange={e=>setNewOnly(e.target.checked)} />
             새 아이디어만
