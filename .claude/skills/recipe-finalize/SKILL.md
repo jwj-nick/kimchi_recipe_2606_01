@@ -27,5 +27,11 @@ metadata:
 - `recipes/<slug>/recipe.md` (템플릿 구조 준수, 정량 파트 완비)
 - 다음: 심화앱이 필요하면 `recipe-appbuild`로.
 
+## 제출용 양식 (외부 제출 시)
+외부 제출처 형식이 필요하면 [assets/submission.template.md](assets/submission.template.md)를 `recipes/<slug>/submission.md`로 복사해 채운다.
+- 항목: 김치명 / 사진첨부 / 소개 요약(이유·배경·추억·특징과 가치) / 식재료(재료·양념·풀) / 조리법.
+- `recipe.md`가 소스 — 분량·조리법은 거기서 가져오되, **미정이면 빈칸**으로 둔다.
+
 ## 템플릿
-복사용 정식 레시피 구조 → [assets/recipe.template.md](assets/recipe.template.md)
+- 정식 레시피 구조 → [assets/recipe.template.md](assets/recipe.template.md)
+- 제출용 양식(빈칸) → [assets/submission.template.md](assets/submission.template.md)
