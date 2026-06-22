@@ -16,8 +16,8 @@
     background:#C84E6C; color:#fff; border:none; border-radius:8px; padding:10px 22px; }
   .bar span{ display:block; color:#666; font-size:12px; margin-top:8px; }
 
-  .page{ width:210mm; min-height:297mm; margin:0 auto 20px; background:#fff;
-    padding:14mm 12mm; }
+  .page{ width:190mm; min-height:277mm; margin:0 auto 20px; background:#fff;
+    padding:0; }
 
   .title{ border:1.5px solid var(--line); background:var(--beige); text-align:center;
     font-size:21px; font-weight:800; letter-spacing:2px; padding:9px 0; }
@@ -49,11 +49,11 @@
   .recipe .inner{ padding:8px 10px; font-size:13px; line-height:2.1; height:100%; }
 
   /* 인쇄 */
-  @page{ size:A4 portrait; margin:10mm; }
+  @page{ size:A4 portrait; margin:10mm; }   /* A4 210mm - 좌우 10mm = 인쇄폭 190mm */
   @media print{
     html,body{ background:#fff; }
     .bar{ display:none; }
-    .page{ width:auto; min-height:auto; margin:0; padding:0; }
+    .page{ width:190mm; min-height:auto; margin:0; padding:0; }
     *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   }
 </style>
@@ -69,7 +69,7 @@
   <div class="title">2026 김치 리더스 아카데미 실습 수업</div>
 
   <table class="top">
-    <colgroup><col style="width:40%"><col style="width:60%"></colgroup>
+    <colgroup><col style="width:44%"><col style="width:56%"></colgroup>
     <tr>
       <!-- 좌: 사진 -->
       <td>
@@ -94,7 +94,7 @@
 
   <table class="grid">
     <colgroup>
-      <col style="width:18%"><col style="width:12%"><col style="width:10%"><col style="width:60%">
+      <col style="width:20%"><col style="width:13%"><col style="width:11%"><col style="width:56%">
     </colgroup>
     <thead>
       <tr><th>식재료</th><th>분량</th><th>단위</th><th>조리법(Recipe)</th></tr>
