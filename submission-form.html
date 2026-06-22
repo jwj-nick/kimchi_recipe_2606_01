@@ -28,16 +28,16 @@
 
   .hdr{ background:var(--beige); text-align:center; font-weight:700; font-size:13px;
     padding:5px 0; border-bottom:1px solid var(--line); }
-  .photo{ height:200px; display:flex; align-items:center; justify-content:center;
-    color:#555; font-size:13px; }
+  .photo{ height:281px; display:flex; align-items:center; justify-content:center;
+    color:#555; font-size:13px; }   /* 사진 칸 세로 +3칸 분량 */
 
   .name{ font-size:15px; font-weight:700; padding:14px 12px 16px; }
   .name .u{ display:inline-block; min-width:62%; border-bottom:1.4px solid var(--line);
     height:1.1em; vertical-align:bottom; }
-  .intro{ padding:8px 10px; min-height:150px; display:flex; flex-direction:column; }
+  .intro{ padding:8px 10px; min-height:231px; display:flex; flex-direction:column; }
   .intro .note{ font-size:10px; color:#8a7656; background:#FBF4E6;
     border:1px dashed #d8c49a; border-radius:4px; padding:5px 8px; line-height:1.6; }
-  .intro .writearea{ flex:1; min-height:96px; }   /* 실제 소개 요약을 적는 빈 공간 */
+  .intro .writearea{ flex:1; min-height:180px; }   /* 실제 소개 요약을 적는 빈 공간 (세로 +3칸) */
 
   /* 하단 그리드 */
   .grid{ border:1.5px solid var(--line); border-top:none; }
@@ -101,7 +101,7 @@
 
 <script>
   // 좌측 식재료 표(재료/양념/풀) + 우측 조리법(rowspan) 자동 생성
-  const sections = [["재료",4],["양념",9],["풀",2]];
+  const sections = [["재료",5],["양념",10],["풀",3]];   // 재료/양념/풀 각 +1행
   const rows = [];
   sections.forEach(([label,n])=>{
     rows.push({sec:label});
