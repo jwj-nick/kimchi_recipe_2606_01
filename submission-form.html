@@ -34,10 +34,10 @@
   .name{ font-size:15px; font-weight:700; padding:14px 12px 16px; }
   .name .u{ display:inline-block; min-width:62%; border-bottom:1.4px solid var(--line);
     height:1.1em; vertical-align:bottom; }
-  .intro{ padding:10px 12px; font-size:12.5px; line-height:2.0; min-height:120px; }
-  .intro .lead{ margin:0 0 6px; }
-  .intro ol{ margin:6px 0 0; padding-left:18px; }
-  .intro li{ margin-bottom:2px; }
+  .intro{ padding:8px 10px; min-height:150px; display:flex; flex-direction:column; }
+  .intro .note{ font-size:10px; color:#8a7656; background:#FBF4E6;
+    border:1px dashed #d8c49a; border-radius:4px; padding:5px 8px; line-height:1.6; }
+  .intro .writearea{ flex:1; min-height:96px; }   /* 실제 소개 요약을 적는 빈 공간 */
 
   /* 하단 그리드 */
   .grid{ border:1.5px solid var(--line); border-top:none; }
@@ -81,12 +81,8 @@
         <div class="name">김치명 : <span class="u"></span></div>
         <div class="hdr" style="border-top:1px solid var(--line)">제출작 소개 요약</div>
         <div class="intro">
-          <p class="lead">하기의 사항을 고려하여 소개 요약서 작성</p>
-          <ol>
-            <li>김치의 레시피가 만들어지게 된 이유, 배경</li>
-            <li>김치에 얽힌 추억이나 이야기</li>
-            <li>김치의 특징과 가치에 대하여 등</li>
-          </ol>
+          <div class="note">※ 작성 안내(아래를 고려해 이 칸에 직접 작성) — ① 김치 레시피가 만들어진 이유·배경 ② 김치에 얽힌 추억·이야기 ③ 김치의 특징과 가치 등</div>
+          <div class="writearea"></div>
         </div>
       </td>
     </tr>
